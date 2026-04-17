@@ -1,0 +1,43 @@
+# =========================
+# .NET / Visual Studio
+# =========================
+
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code / IDE
+.vscode/
+.vs/
+
+# Rider
+.idea/
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Database files 
+# =========================
+*.db
+*.sqlite
+*.sqlite3
+
+# Specifically ignore your SQLCipher DB
+CD5000Dashboard/DataFiles/*.db
+
+# =========================
+# Secrets / configs
+# =========================
+appsettings.Development.json
