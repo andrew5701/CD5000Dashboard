@@ -1,10 +1,18 @@
 using CD5000Dashboard.Components;
+using CD5000Dashboard.Data;
+using SQLitePCL;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Initialize SQLCipher provider
+Batteries_V2.Init();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddSingleton<SqliteConnectionFactory>();
+builder.Services.AddScoped<DashboardRepository>();
 
 var app = builder.Build();
 
@@ -12,12 +20,10 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
-app.UseHttpsRedirection();
 
+app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
