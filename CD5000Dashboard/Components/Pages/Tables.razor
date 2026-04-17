@@ -1,0 +1,120 @@
+﻿@page "/tables"
+@inject CD5000Dashboard.Data.TableBrowserService TableService
+
+<PageTitle>Table Browser</PageTitle>
+
+<h1 class="mb-4">Table Browser</h1>
+
+@if (_loading)
+{
+    <p>Loading...</p>
+}
+else if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+    <div class="alert alert-danger">@_errorMessage</div>
+}
+else
+{
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <strong>Tables</strong>
+                </div>
+
+                <div class="card-body">
+                    <input class="form-control mb-3"
+                           placeholder="Search tables..."
+                           @bind="TableSearch"
+                           @bind:event="oninput" />
+
+                    <div style="max-height: 600px; overflow-y: auto;">
+                        <div class="list-group">
+                            @foreach (var table in FilteredTables)
+                            {
+                                <button type="button"
+                                        class="list-group-item list-group-item-action @(table == _selectedTable ? "active" : "")"
+                                        @onclick="() => LoadTableAsync(table)">
+                                    @table
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <div>
+                        <strong>@(_selectedTable ?? "Select a table")</strong>
+                        @if (!string.IsNullOrWhiteSpace(_selectedTable))
+                        {
+                            <small class="text-muted ms-2">Showing @_filteredRows.Count row(s)</small>
+                        }
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(_selectedTable))
+                    {
+                        <div class="d-flex flex-wrap gap-2">
+                            <input class="form-control"
+                                   style="width: 250px;"
+                                   placeholder="Search rows..."
+                                   @bind="RowSearch"
+                                   @bind:event="oninput" />
+
+                            <select class="form-select" style="width: 100px;" @bind="_rowLimit">
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="250">250</option>
+                            </select>
+
+                            <button class="btn btn-primary" @onclick="ReloadSelectedTableAsync">
+                                Load
+                            </button>
+                        </div>
+                    }
+                </div>
+
+                <div class="card-body">
+                    @if (string.IsNullOrWhiteSpace(_selectedTable))
+                    {
+                        <p class="text-muted mb-0">Choose a table from the left to view its contents.</p>
+                    }
+                    else if (_filteredRows.Count == 0)
+                    {
+                        <p class="mb-0">No rows found.</p>
+                    }
+                    else
+                    {
+                        <div style="max-height: 650px; overflow: auto;">
+                            <table class="table table-striped table-bordered table-hover table-sm mb-0">
+                                <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
+                                    <tr>
+                                        @foreach (var col in _filteredRows.First().Keys)
+                                        {
+                                            <th>@col</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var row in _filteredRows)
+                                    {
+                                        <tr>
+                                            @foreach (var val in row.Values)
+                                            {
+                                                <td>@(val?.ToString() ?? string.Empty)</td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
