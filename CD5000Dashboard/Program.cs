@@ -13,6 +13,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddSingleton<SqliteConnectionFactory>();
 builder.Services.AddScoped<DashboardRepository>();
+builder.Services.AddScoped<TableBrowserService>();
 
 var app = builder.Build();
 
