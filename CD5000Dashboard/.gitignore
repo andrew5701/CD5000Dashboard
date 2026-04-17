@@ -40,4 +40,5 @@ CD5000Dashboard/DataFiles/*.db
 # =========================
 # Secrets / configs
 # =========================
+appsettings.json
 appsettings.Development.json

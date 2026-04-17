@@ -1,12 +1,18 @@
 ﻿using CD5000Dashboard.Data.Models;
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+
 
 namespace CD5000Dashboard.Components.Pages
 {
     public partial class Dashboard
     {
         private bool _loading = true;
+        private bool _chartRendered = false;
         private int _transactionCount;
         private string? _errorMessage;
+
+        [Inject] private IJSRuntime JS { get; set; } = default!;
 
         private IEnumerable<HourlyTransactionRow> _hourlyData = Enumerable.Empty<HourlyTransactionRow>();
         private IEnumerable<MissingRfidRow> _missingRfid = Enumerable.Empty<MissingRfidRow>();
@@ -32,6 +38,19 @@ namespace CD5000Dashboard.Components.Pages
             finally
             {
                 _loading = false;
+            }
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (!_chartRendered && !_loading && _hourlyData.Any())
+            {
+                var labels = _hourlyData.Select(x => x.Hour).ToArray();
+                var data = _hourlyData.Select(x => x.TransactionCount).ToArray();
+
+                await JS.InvokeVoidAsync("renderChart", labels, data);
+
+                _chartRendered = true;
             }
         }
     }

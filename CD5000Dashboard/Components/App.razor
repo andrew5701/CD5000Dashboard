@@ -17,7 +17,52 @@
 <body>
     <Routes @rendermode="InteractiveServer" />
     <ReconnectModal />
+
     <script src="@Assets["_framework/blazor.web.js"]"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        window.renderChart = (labels, data) => {
+        const ctx = document.getElementById('hourChart');
+
+        if (!ctx) return;
+
+        if (window.hourChartInstance) {
+        window.hourChartInstance.destroy();
+        }
+
+        window.hourChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+        labels: labels,
+        datasets: [{
+        label: 'Transactions',
+        data: data
+        }]
+        },
+        options: {
+        responsive: true,
+        plugins: {
+        legend: { display: false }
+        },
+        scales: {
+        x: {
+        title: {
+        display: true,
+        text: 'Hour'
+        }
+        },
+        y: {
+        title: {
+        display: true,
+        text: 'Transactions'
+        },
+        beginAtZero: true
+        }
+        }
+        }
+        });
+        };
+    </script>
 </body>
 
 </html>
