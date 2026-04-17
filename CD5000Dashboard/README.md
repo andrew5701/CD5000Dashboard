@@ -2,10 +2,7 @@
 
 ## Overview
 
-This project is a **Blazor Server dashboard application** that connects to a SQLCipher-encrypted SQLite database and provides:
-
-* Operator-focused summary analytics
-* A read-only table browser for database inspection
+This project is a **Blazor Server dashboard application** that connects to a SQLCipher-encrypted SQLite database
 
 ---
 
@@ -73,25 +70,3 @@ This application uses a SQLCipher-encrypted SQLite database.
 4. Run the application (`F5`)
 
 The dashboard will open in your browser.
-
----
-
-## Notes
-
-* The application is intentionally **read-only**
-* Database access is handled via repository/service layers
-* Chart.js is used for data visualization
-
----
-
-## Summary
-
-This project demonstrates:
-
-* Blazor Server development
-* Secure database connectivity using SQLCipher
-* Data querying with Dapper
-* UI design for reporting and analytics
-* Clean separation of concerns using services and models
-
----
