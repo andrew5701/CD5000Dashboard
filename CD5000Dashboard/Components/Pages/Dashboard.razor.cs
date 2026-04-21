@@ -2,15 +2,17 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-
 namespace CD5000Dashboard.Components.Pages
 {
     public partial class Dashboard
     {
         private bool _loading = true;
         private bool _chartRendered = false;
+        private bool _shouldRenderChart = false;
+
         private int _transactionCount;
         private string? _errorMessage;
+        private string activeTab = "overview";
 
         [Inject] private IJSRuntime JS { get; set; } = default!;
 
@@ -30,6 +32,8 @@ namespace CD5000Dashboard.Components.Pages
                 _avgDurationByVehicle = await Repository.GetAverageDurationByVehicleAsync();
                 _avgDurationByUnitTrain = await Repository.GetAverageDurationByUnitTrainAsync();
                 _topProducts = await Repository.GetTopProductsAsync();
+
+                _shouldRenderChart = true;
             }
             catch (Exception ex)
             {
@@ -43,15 +47,36 @@ namespace CD5000Dashboard.Components.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (!_chartRendered && !_loading && _hourlyData.Any())
+            if (!_loading &&
+                activeTab == "overview" &&
+                _hourlyData.Any() &&
+                _shouldRenderChart)
             {
-                var labels = _hourlyData.Select(x => x.Hour).ToArray();
-                var data = _hourlyData.Select(x => x.TransactionCount).ToArray();
-
-                await JS.InvokeVoidAsync("renderChart", labels, data);
-
+                await RenderChartAsync();
                 _chartRendered = true;
+                _shouldRenderChart = false;
             }
+        }
+
+        private async Task SetTab(string tab)
+        {
+            activeTab = tab;
+
+            if (activeTab == "overview")
+            {
+                _chartRendered = false;
+                _shouldRenderChart = true;
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+
+        private async Task RenderChartAsync()
+        {
+            var labels = _hourlyData.Select(x => x.Hour).ToArray();
+            var data = _hourlyData.Select(x => x.TransactionCount).ToArray();
+
+            await JS.InvokeVoidAsync("renderChart", labels, data);
         }
     }
 }
