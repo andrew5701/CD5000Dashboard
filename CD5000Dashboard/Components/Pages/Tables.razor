@@ -28,7 +28,7 @@ else
                            @bind="TableSearch"
                            @bind:event="oninput" />
 
-                    <div style="max-height: 600px; overflow-y: auto;">
+                    <div style="max-height: 600px; overflow-y: auto; max-width: 500px">
                         <div class="list-group">
                             @foreach (var table in FilteredTables)
                             {
@@ -89,7 +89,7 @@ else
                     }
                     else
                     {
-                        <div style="max-height: 650px; overflow: auto;">
+                        <div style="max-height: 650px; overflow: auto; max-width: 1000px" class="overflow-x-scroll">
                             <table class="table table-striped table-bordered table-hover table-sm mb-0">
                                 <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
                                     <tr>
